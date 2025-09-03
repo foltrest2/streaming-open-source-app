@@ -1,0 +1,189 @@
+services:
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  # Keycloak
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0
+    container_name: keycloak
+    command: start-dev
+    env_file: .env
+    ports:
+      - "8082:8080"
+
+  # PostgreSQL Users
+  postgres-users:
+    image: postgres:16-alpine
+    container_name: postgres-users
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${USERS_DB_USER}
+      POSTGRES_PASSWORD: ${USERS_DB_PASSWORD}
+      POSTGRES_DB: ${USERS_DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/users/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - users_data:/var/lib/postgresql/data
+
+  # PostgreSQL Catalog
+  postgres-catalog:
+    image: postgres:16-alpine
+    container_name: postgres-catalog
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${CATALOG_DB_USER}
+      POSTGRES_PASSWORD: ${CATALOG_DB_PASSWORD}
+      POSTGRES_DB: ${CATALOG_DB_NAME}
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./db/catalog/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - catalog_data:/var/lib/postgresql/data
+
+  # PostgreSQL Billing
+  postgres-billing:
+    image: postgres:16-alpine
+    container_name: postgres-billing
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${BILLING_DB_USER}
+      POSTGRES_PASSWORD: ${BILLING_DB_PASSWORD}
+      POSTGRES_DB: ${BILLING_DB_NAME}
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./db/billing/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - billing_data:/var/lib/postgresql/data
+
+  # Users Service (Python)
+  users:
+    build:
+      context: ../backend/user-service
+      dockerfile: Dockerfile
+    container_name: users
+    env_file: .env
+    environment:
+      DB_HOST: postgres-users
+      DB_PORT: 5432
+      DB_USER: ${USERS_DB_USER}
+      DB_PASSWORD: ${USERS_DB_PASSWORD}
+      DB_NAME: ${USERS_DB_NAME}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KEYCLOAK_URL: http://keycloak:8080
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres-users
+      - redis
+      - keycloak
+
+  # Catalog Service (Node.js)
+  catalog:
+    build:
+      context: ../backend/catalog-service
+      dockerfile: Dockerfile
+    container_name: catalog
+    env_file: .env
+    environment:
+      DB_HOST: postgres-catalog
+      DB_PORT: 5432
+      DB_USER: ${CATALOG_DB_USER}
+      DB_PASSWORD: ${CATALOG_DB_PASSWORD}
+      DB_NAME: ${CATALOG_DB_NAME}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KEYCLOAK_URL: http://keycloak:8080
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres-catalog
+      - redis
+      - keycloak
+
+  # Streaming Service (Go)
+  streaming:
+    build:
+      context: ../backend/streaming-service
+      dockerfile: Dockerfile
+    container_name: streaming
+    env_file: .env
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KEYCLOAK_URL: http://keycloak:8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - keycloak
+
+  # Billing Service (Java)
+  billing:
+    build:
+      context: ../backend/billing-service
+      dockerfile: Dockerfile
+    container_name: billing
+    env_file: .env
+    environment:
+      DB_HOST: postgres-billing
+      DB_PORT: 5432
+      DB_USER: ${BILLING_DB_USER}
+      DB_PASSWORD: ${BILLING_DB_PASSWORD}
+      DB_NAME: ${BILLING_DB_NAME}
+      KEYCLOAK_URL: http://keycloak:8080
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres-billing
+      - keycloak
+
+  # Frontend
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    env_file: .env
+    environment:
+      REACT_APP_API_URL: http://localhost:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - users
+      - catalog
+      - streaming
+      - billing
+      - gateway
+
+  # Gateway (Node.js)
+  gateway:
+    build:
+      context: ../gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    env_file: .env
+    environment:
+      USERS_URL: http://users:5000
+      CATALOG_URL: http://catalog:4000
+      STREAMING_URL: http://streaming:8080
+      BILLING_URL: http://billing:8081
+      KEYCLOAK_URL: http://keycloak:8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - users
+      - catalog
+      - streaming
+      - billing
+      - keycloak
+
+volumes:
+  users_data:
+  catalog_data:
+  billing_data:
