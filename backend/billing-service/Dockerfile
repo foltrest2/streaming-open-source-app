@@ -29,7 +29,7 @@ RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 USER appuser
 
 # Exponer puerto
-EXPOSE 8081
+EXPOSE 8080
 
 # Comando por defecto
 CMD ["java", "-jar", "app.jar"]

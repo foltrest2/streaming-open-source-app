@@ -1,8 +1,12 @@
 {
-    "name": "frontend",
-  "version": "0.1.0",
+  "name": "frontend",
+  "version": "1.0.0",
+  "main": "app.js",
   "scripts": {
-    "build": "echo 'Building frontend...'",
-    "start": "echo 'Starting frontend...'"
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
   }
 }
