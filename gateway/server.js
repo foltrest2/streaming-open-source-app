@@ -13,11 +13,11 @@ app.listen(PORT, () => {
 });
 
 const services = {
-  users: 'http://users:5000/actuator/health',
-  billing: 'http://billing:8081/actuator/health',
-  catalog: 'http://catalog:4000/actuator/health',
-  streaming: 'http://streaming:8080/actuator/health',
-  recommendation: 'http://recommendation:8082/actuator/health'
+  users: 'http://users:8080/health',
+  billing: 'http://billing:8080/health',
+  catalog: 'http://catalog:4000/health',
+  streaming: 'http://streaming:8080/health',
+  recommendation: 'http://recommendation:5005/health'
 };
 
 app.get('/health/all', async (req, res) => {

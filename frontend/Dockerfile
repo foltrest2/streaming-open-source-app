@@ -17,7 +17,7 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 # Cambiamos a usuario no root
-USER appuser
+#USER appuser
 
 # Exponemos el puerto donde corre la app (por ejemplo 3000)
 EXPOSE 3000

@@ -17,7 +17,7 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 # Cambiamos a usuario no root
-USER appuser
+#USER appuser
 
 # Exponemos el puerto donde correrá el Gateway
 EXPOSE 8080
