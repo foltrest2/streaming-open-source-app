@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import cors from "cors";
 import { fileURLToPath } from "url";
 
 const app = express();
@@ -12,8 +13,33 @@ const __dirname = path.dirname(__filename);
 // Servir archivos estáticos
 app.use(express.static(path.join(__dirname, "public")));
 
+const allowedOrigins = [
+  "http://localhost:3000",    // para desarrollo
+  "https://tu-dominio.com"    // para producción
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS no permitido desde este origen"));
+    }
+  },
+}));
+
+app.get("/api/health/all", async (req, res) => {
+  try {
+    const response = await fetch("http://gateway:8080/health/all");
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Error al conectar con gateway", detail: err.message });
+  }
+});
+
 // Endpoint de prueba (opcional)
-app.get("/ping", (req, res) => {
+app.get("/health", (req, res) => {
   res.json({ message: "Frontend Node.js funcionando correctamente 🚀" });
 });
 

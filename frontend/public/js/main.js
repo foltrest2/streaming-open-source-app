@@ -1,7 +1,7 @@
 const output = document.getElementById("output");
 
 document.getElementById("btnHealthAll").addEventListener("click", async () => {
-  await checkHealth("All", "http://gateway:8080/health/all");
+  await checkHealth("All", "/api/health/all");
 });
 
 async function checkHealth(name, url) {
