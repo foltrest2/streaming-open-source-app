@@ -1,0 +1,63 @@
+body {
+  .login-box {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    width: 380px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    color: #830cc4;
+  }
+
+  .logo-box {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .logo {
+    width: 90px;
+    margin-bottom: 10px;
+  }
+
+  .app-title {
+    color: #830cc4;
+    font-size: 22px;
+    margin: 0;
+    font-weight: bold;
+  }
+
+  .kc-form input[type="text"],
+  .kc-form input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 2px solid #830cc4;
+    margin-bottom: 14px;
+    font-size: 15px;
+  }
+
+  .kc-button {
+    width: 100%;
+    background: #830cc4;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .kc-button:hover {
+    background: #6d0aa3;
+  }
+
+  .signup-link {
+    text-align: center;
+    margin-top: 18px;
+  }
+
+  .signup-link a {
+    color: #0cb7f2;
+    font-weight: bold;
+  }
+}

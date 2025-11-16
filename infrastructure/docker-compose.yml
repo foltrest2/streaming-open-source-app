@@ -10,10 +10,44 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:25.0
     container_name: keycloak
-    command: start-dev
+    command: 
+      - start-dev
+      - --features=preview
+      - --import-realm
     env_file: .env
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres-keycloak
+      KC_DB_URL_PORT: 5432
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KC_DB_URL_DATABASE: ${KEYCLOAK_DB_NAME}
+      KC_SPI_THEME_CACHE_ENABLED: "false"
+      KC_METRICS_ENABLED: "true"
+      KC_FEATURES: "preview"
     ports:
       - "8082:8080"
+    depends_on:
+      - postgres-keycloak
+    volumes:
+      - ./keycloak/themes:/opt/keycloak/themes
+      - ./keycloak/realm-export:/opt/keycloak/data/import
+
+
+  # PostgreSQL Keycloak
+  postgres-keycloak:
+    image: postgres:16-alpine
+    container_name: postgres-keycloak
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${KEYCLOAK_DB_USER}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      POSTGRES_DB: ${KEYCLOAK_DB_NAME}
+    ports:
+      - "5431:5432"
+    volumes:
+      - keycloak-db-data:/var/lib/postgresql/data
+    restart: always
 
   # PostgreSQL Users
   postgres-users:
@@ -227,3 +261,4 @@ volumes:
   catalog_data:
   billing_data:
   recommendation_data:
+  keycloak-db-data:
