@@ -216,15 +216,16 @@ services:
 
   # Frontend
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: node:20
     container_name: frontend
+    working_dir: /app
     env_file: .env
-    environment:
-      REACT_APP_API_URL: http://localhost:8080
+    volumes:
+      - ../frontend:/app
     ports:
       - "3000:3000"
+      - "9229:9229"
+    command: npx nodemon --inspect=0.0.0.0:9229 server.js
     depends_on:
       - users
       - catalog
@@ -247,8 +248,8 @@ services:
       KEYCLOAK_URL: http://keycloak:8080
     ports:
       - "8080:8080"
-      - "9229:9229"
-    command: node --inspect=0.0.0.0:9229 server.js
+    #  - "9228:9229"
+    #command: node --inspect=0.0.0.0:9229 server.js
     depends_on:
       - users
       - catalog

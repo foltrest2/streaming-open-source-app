@@ -6,12 +6,36 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <h1>Panel de microservicios</h1>
 
-    <button id="btnHealthAll">Verificar salud de todos los servicios</button>
+    <!-- LOGIN -->
+    <div id="login-section" style="display:none;">
+      <h1>Streaming App</h1>
+      <button id="loginBtn">Iniciar sesión</button>
+    </div>
 
-    <pre id="output"></pre>
+    <!-- PANEL -->
+    <div id="panel-section" style="display:none;">
+      <h1>Panel de microservicios</h1>
 
+      <p>
+        Usuario: <strong><span id="username"></span></strong>
+        <button id="logoutBtn">Logout</button>
+      </p>
+
+      <button id="btnHealthAll">
+        Verificar salud de todos los servicios
+      </button>
+
+      <pre id="output"></pre>
+      <pre id="out2"></pre>
+    </div>
+
+    <!-- Keycloak adapter -->
+    <script src="https://cdn.jsdelivr.net/npm/keycloak-js@24.0.4/dist/keycloak.min.js"></script>
+    <!-- Auth primero -->
+    <script src="js/auth.js"></script>
+    <!-- Lógica del panel -->
     <script src="js/main.js"></script>
+    
   </body>
 </html>
