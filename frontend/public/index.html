@@ -1,41 +1,129 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <title>Panel de Servicios</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Streaming App - Tu Plataforma de Series y Películas</title>
     <link rel="stylesheet" href="css/style.css" />
-  </head>
-  <body>
-
-    <!-- LOGIN -->
-    <div id="login-section" style="display:none;">
-      <h1>Streaming App</h1>
-      <button id="loginBtn">Iniciar sesión</button>
+</head>
+<body>
+    <!-- LOGIN SECTION -->
+    <div id="login-section" class="login-container">
+        <div class="login-box">
+            <h1 class="logo">🎬 StreamingApp</h1>
+            <p class="tagline">Disfruta de películas y series sin límites</p>
+            <div class="login-form">
+                <input 
+                type="text" 
+                id="username-input" 
+                class="login-input" 
+                placeholder="Nombre de usuario"
+            >
+            <input 
+                type="password" 
+                id="password-input" 
+                class="login-input" 
+                placeholder="Contraseña"
+            >
+            </div>
+            <button id="login-btn" class="btn-primary btn-large">Iniciar Sesión</button>
+        </div>
     </div>
 
-    <!-- PANEL -->
+    <!-- MAIN APP -->
     <div id="panel-section" style="display:none;">
-      <h1>Panel de microservicios</h1>
+        <!-- HEADER/NAVBAR -->
+        <header class="navbar">
+            <div class="navbar-container">
+                <div class="logo-header">
+                    <span class="logo-icon">🎬</span>
+                    <h1 class="logo-text">StreamingApp</h1>
+                </div>
+                
+                <div class="search-bar">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-input" 
+                        placeholder="Buscar películas, series..."
+                    >
+                    <button class="search-btn">🔍</button>
+                </div>
 
-      <p>
-        Usuario: <strong><span id="username"></span></strong>
-        <button id="logoutBtn">Logout</button>
-      </p>
+                <nav class="nav-menu">
+                    <a href="#" class="nav-link active">Inicio</a>
+                    <a href="#" class="nav-link">Películas</a>
+                    <a href="#" class="nav-link">Series</a>
+                    <a href="#" class="nav-link">Mis Favoritos</a>
+                </nav>
 
-      <button id="btnHealthAll">
-        Verificar salud de todos los servicios
-      </button>
+                <div class="user-menu">
+                    <span class="user-name" id="username"></span>
+                    <button id="logout-btn" class="btn-logout">Logout</button>
+                </div>
+            </div>
+        </header>
 
-      <pre id="output"></pre>
-      <pre id="out2"></pre>
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Bienvenido a StreamingApp</h2>
+                <p>Disfruta del mejor catálogo de películas y series</p>
+                <input 
+                    type="text" 
+                    class="hero-search" 
+                    placeholder="¿Qué deseas ver hoy?"
+                >
+            </div>
+        </section>
+
+        <!-- CATEGORIES -->
+        <section class="categories-section">
+            <h3>Categorías</h3>
+            <div class="categories-container">
+                <button class="category-btn active" data-category="all">Todas</button>
+                <button class="category-btn" data-category="action">Acción</button>
+                <button class="category-btn" data-category="drama">Drama</button>
+                <button class="category-btn" data-category="comedy">Comedia</button>
+                <button class="category-btn" data-category="horror">Terror</button>
+                <button class="category-btn" data-category="scifi">Ciencia Ficción</button>
+            </div>
+        </section>
+
+        <!-- CONTENT GRID -->
+        <section class="content-section">
+            <h3 id="section-title">Contenido Popular</h3>
+            <div id="content-grid" class="content-grid">
+                <!-- Las películas/series se cargarán aquí -->
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2026 StreamingApp. Todos los derechos reservados.</p>
+                <div class="footer-links">
+                    <a href="#">Privacidad</a>
+                    <a href="#">Términos de Servicio</a>
+                    <a href="#">Contacto</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- MODAL para detalles -->
+    <div id="modalDetail" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalBody"></div>
+        </div>
     </div>
 
     <!-- Keycloak adapter -->
     <script src="https://cdn.jsdelivr.net/npm/keycloak-js@24.0.4/dist/keycloak.min.js"></script>
     <!-- Auth primero -->
     <script src="js/auth.js"></script>
-    <!-- Lógica del panel -->
+    <!-- Lógica de la plataforma -->
     <script src="js/main.js"></script>
-    
-  </body>
+</body>
 </html>
