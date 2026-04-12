@@ -1,0 +1,45 @@
+@page "/authentication/{Action}"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject NavigationManager Navigation
+
+<RemoteAuthenticatorView Action="@Action">
+    
+    @* --- LOGIN --- *@
+    <LoggingIn>
+        <p>Conectando con el servidor de identidad...</p>
+    </LoggingIn>
+    
+    <Registering>
+        <p>Preparando el formulario de registro...</p>
+    </Registering>
+
+    @* !ESTO NO ESTA PROBADO! *@
+    <LogInFailed Context="error">
+        <div class="auth-error">
+            <p>Error al entrar: @error</p>
+            <button @onclick='() => Navigation.NavigateTo(Navigation.BaseUri)'>Volver</button>
+        </div>
+    </LogInFailed>
+
+    @* --- LOGOUT --- *@
+    <LogOut>
+        <p>Cerrando tu sesión de streaming...</p>
+    </LogOut>
+
+    <LogOutSucceeded>
+        <p>¡Sesión cerrada con éxito! Redirigiendo...</p>
+    </LogOutSucceeded>
+
+    <LogOutFailed Context="error">
+        <div class="auth-error">
+            <p>No se pudo cerrar la sesión correctamente: @error</p>
+            <a href="/">Ir al inicio</a>
+        </div>
+    </LogOutFailed>
+
+</RemoteAuthenticatorView> />
+
+@code {
+    [Parameter]
+    public string Action { get; set; } = default!;
+}

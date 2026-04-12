@@ -1,0 +1,193 @@
+﻿@page "/"
+
+@inject NavigationManager Navigation
+
+<AuthorizeView>
+    <Authorized Context="authState">
+        <div id="panel-section">
+            <!-- HEADER/NAVBAR -->
+            <header class="navbar">
+                <div class="navbar-container">
+                    <div class="logo-header">
+                        <span class="logo-icon">🎬</span>
+                        <h1 class="logo-text">StreamingApp</h1>
+                    </div>
+
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Buscar películas, series..."
+                               @bind="SearchTerm" @onkeyup="HandleSearch" />
+                        <button class="search-btn" @onclick="SearchContent">🔍</button>
+                    </div>
+
+                    <nav class="nav-menu">
+                        <a href="#" class='nav-link @(SelectedCategory == "all" ? "active" : "")'
+                           @onclick='(() => SelectCategory("all"))'>Inicio</a>
+                        <a href="#" class="nav-link @(SelectedCategory == "movies" ? "active" : "")"
+                           @onclick='(() => SelectCategory("movies"))'>Películas</a>
+                        <a href="#" class="nav-link @(SelectedCategory == "series" ? "active" : "")"
+                           @onclick='(() => SelectCategory("series"))'>Series</a>
+                        <a href="#" class="nav-link @(SelectedCategory == "favorites" ? "active" : "")"
+                           @onclick='(() => SelectCategory("favorites"))'>Mis Favoritos</a>
+                    </nav>
+
+                    <div class="user-menu">
+                        <span class="user-name" id="username">@((authState.User.Identity?.Name) ?? "Usuario")</span>
+                        <button id="logout-btn" class="btn-logout" @onclick="Logout">Logout</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- HERO SECTION -->
+            <section class="hero">
+                <div class="hero-content">
+                    <h2>Bienvenido a StreamingApp</h2>
+                    <p>Disfruta del mejor catálogo de películas y series</p>
+                    <input type="text" class="hero-search" placeholder="¿Qué deseas ver hoy?" @bind="SearchTerm"
+                           @onkeyup="HandleSearch" />
+                </div>
+            </section>
+
+            <!-- CATEGORIES -->
+            <section class="categories-section">
+                <h3>Categorías</h3>
+                <div class="categories-container">
+                    <button class='category-btn @(SelectedCategory == "all" ? "active" : "")'
+                            @onclick='(() => SelectCategory("all"))' data-category="all">Todas</button>
+                    <button class="category-btn @(SelectedCategory == "action" ? "active" : "")"
+                            @onclick='(() => SelectCategory("action"))' data-category="action">Acción</button>
+                    <button class="category-btn @(SelectedCategory == "drama" ? "active" : "")"
+                            @onclick='(() => SelectCategory("drama"))' data-category="drama">Drama</button>
+                    <button class="category-btn @(SelectedCategory == "comedy" ? "active" : "")"
+                            @onclick='(() => SelectCategory("comedy"))' data-category="comedy">Comedia</button>
+                    <button class="category-btn @(SelectedCategory == "horror" ? "active" : "")"
+                            @onclick='(() => SelectCategory("horror"))' data-category="horror">Terror</button>
+                    <button class="category-btn @(SelectedCategory == "scifi" ? "active" : "")"
+                            @onclick='(() => SelectCategory("scifi"))' data-category="scifi">Ciencia Ficción</button>
+                </div>
+            </section>
+
+            <!-- CONTENT GRID -->
+            <section class="content-section">
+                <h3 id="section-title">Contenido @(SelectedCategory == "all" ? "Popular" : SelectedCategory)</h3>
+                <div id="content-grid" class="content-grid">
+                    @if (FilteredContent.Any())
+                    {
+                        @foreach (var item in FilteredContent)
+                        {
+                            <div class="content-card">
+                                <span class="content-emoji">@item.Emoji</span>
+                                <h4 class="content-title">@item.Title</h4>
+                                <p class="content-meta">@item.Year | Calificación: @item.Rating</p>
+                                <button class="btn-primary btn-small">Ver Ahora</button>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>No se encontró contenido para la categoría seleccionada o el término de búsqueda.</p>
+                    }
+                </div>
+            </section>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="login-container">
+            <div class="login-box">
+                <h1 class="logo">🎬 StreamingApp</h1>
+                <p class="tagline">Inicia sesión con Keycloak para continuar.</p>
+                <button class="btn-primary btn-large" @onclick="Login">Iniciar sesión</button>
+            </div>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private string Username { get; set; } = "Invitado";
+    private string SearchTerm { get; set; } = string.Empty;
+    private string SelectedCategory { get; set; } = "all";
+
+    private List<ContentItem> AllContent = new List<ContentItem>();
+    private List<ContentItem> FilteredContent = new List<ContentItem>();
+
+    protected override void OnInitialized()
+    {
+        LoadContent();
+        FilterContent();
+    }
+
+    private void Login()
+    {
+        Navigation.NavigateToLogin("authentication/login");
+    }
+
+    private void Logout()
+    {
+        Navigation.NavigateToLogout("authentication/logout");
+    }
+
+    private void LoadContent()
+    {
+        AllContent = new List<ContentItem>
+        {
+            new ContentItem { Id = 1, Title = "Stranger Things", Category = "drama", Rating = 9.0, Emoji = "🌀", Year = 2016 },
+            new ContentItem { Id = 2, Title = "The Crown", Category = "drama", Rating = 8.8, Emoji = "👑", Year = 2016 },
+            new ContentItem { Id = 3, Title = "Breaking Bad", Category = "drama", Rating = 9.5, Emoji = "⚗️", Year = 2008 },
+            new ContentItem { Id = 4, Title = "Inception", Category = "scifi", Rating = 8.8, Emoji = "🎭", Year = 2010 },
+            new ContentItem { Id = 5, Title = "The Matrix", Category = "scifi", Rating = 8.7, Emoji = "💊", Year = 1999 },
+            new ContentItem { Id = 6, Title = "Interstellar", Category = "scifi", Rating = 8.6, Emoji = "🚀", Year = 2014 },
+            new ContentItem { Id = 7, Title = "The Office", Category = "comedy", Rating = 9.0, Emoji = "🏢", Year = 2005 },
+            new ContentItem { Id = 8, Title = "Brooklyn Nine-Nine", Category = "comedy", Rating = 8.4, Emoji = "🚔", Year = 2013 },
+            new ContentItem { Id = 9, Title = "The Conjuring", Category = "horror", Rating = 7.5, Emoji = "👻", Year = 2013 },
+            new ContentItem { Id = 10, Title = "Hereditary", Category = "horror", Rating = 7.6, Emoji = "😱", Year = 2018 },
+            new ContentItem { Id = 11, Title = "The Godfather", Category = "drama", Rating = 9.2, Emoji = "🍝", Year = 1972 },
+            new ContentItem { Id = 12, Title = "The Dark Knight", Category = "action", Rating = 9.0, Emoji = "🦇", Year = 2008 },
+            new ContentItem { Id = 13, Title = "Pulp Fiction", Category = "drama", Rating = 8.9, Emoji = "🍔", Year = 1994 },
+            new ContentItem { Id = 14, Title = "Forrest Gump", Category = "drama", Rating = 8.8, Emoji = "🪶", Year = 1994 },
+            new ContentItem { Id = 15, Title = "Fight Club", Category = "drama", Rating = 8.8, Emoji = "🥊", Year = 1999 },
+            new ContentItem { Id = 16, Title = "The Lord of the Rings: The Return of the King", Category = "action", Rating = 8.9, Emoji = "💍", Year = 2003 },
+            new ContentItem { Id = 17, Title = "Goodfellas", Category = "drama", Rating = 8.7, Emoji = "💰", Year = 1990 },
+            new ContentItem { Id = 18, Title = "The Matrix Reloaded", Category = "scifi", Rating = 7.2, Emoji = "🕶️", Year = 2003 },
+            new ContentItem { Id = 19, Title = "The Matrix Revolutions", Category = "scifi", Rating = 6.7, Emoji = "💥", Year = 2003 },
+            new ContentItem { Id = 20, Title = "Interstellar 2", Category = "scifi", Rating = 8.0, Emoji = "🚀", Year = 2028 }
+        };
+    }
+
+    private void FilterContent()
+    {
+        FilteredContent = AllContent
+            .Where(item =>
+                (SelectedCategory == "all" || item.Category == SelectedCategory) &&
+                (string.IsNullOrWhiteSpace(SearchTerm) || item.Title.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
+            )
+            .ToList();
+    }
+
+    private void SelectCategory(string category)
+    {
+        SelectedCategory = category;
+        FilterContent();
+    }
+
+    private void SearchContent()
+    {
+        FilterContent();
+    }
+
+    private void HandleSearch(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            SearchContent();
+        }
+    }
+
+    public class ContentItem
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+        public double Rating { get; set; }
+        public string Emoji { get; set; } = string.Empty;
+        public int Year { get; set; }
+    }
+}
