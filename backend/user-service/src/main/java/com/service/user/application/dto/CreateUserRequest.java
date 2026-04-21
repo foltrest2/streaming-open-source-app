@@ -1,0 +1,27 @@
+package com.service.user.application.dto;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public class CreateUserRequest {
+
+    @Email
+    @NotBlank
+    private String email;
+
+    @NotBlank
+    private String name;
+
+    public CreateUserRequest() {}
+
+    public CreateUserRequest(String email, String name) {
+        this.email = email;
+        this.name = name;
+    }
+
+    public String getEmail() { return email; }
+    public String getName() { return name; }
+
+    public void setEmail(String email) { this.email = email; }
+    public void setName(String name) { this.name = name; }
+}

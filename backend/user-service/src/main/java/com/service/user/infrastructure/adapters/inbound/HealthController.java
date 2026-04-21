@@ -1,4 +1,4 @@
-package com.service.user.controller;
+package com.service.user.infrastructure.adapters.inbound;
 
 import java.util.Map;
 
