@@ -1,5 +1,6 @@
-package com.service.user.application.usecase;
+package com.service.user.application.usecases;
 
+import com.service.user.domain.exception.UserNotFoundException;
 import com.service.user.domain.model.User;
 import com.service.user.domain.model.UserPreferences;
 import com.service.user.domain.ports.UserRepositoryPort;
@@ -18,7 +19,7 @@ public class UpdateUserPreferencesUseCase {
     public User execute(UUID userId, List<String> genres, String language) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         UserPreferences preferences = new UserPreferences();
         preferences.setFavoriteGenres(genres);

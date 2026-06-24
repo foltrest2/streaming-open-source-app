@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.keycloak.representations.idm.UserRepresentation;
 
-import com.service.user.infrastructure.adapters.outbound.identity.Keycloak.dto.ExternalUser;
+import com.service.user.infrastructure.adapters.outbound.identity.model.ExternalUser;
 
 public class KeycloakUserMapper {
 

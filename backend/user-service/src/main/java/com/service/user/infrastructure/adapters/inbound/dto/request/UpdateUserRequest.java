@@ -1,4 +1,4 @@
-package com.service.user.application.dto;
+package com.service.user.infrastructure.adapters.inbound.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 

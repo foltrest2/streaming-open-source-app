@@ -1,5 +1,6 @@
-package com.service.user.application.usecase;
+package com.service.user.application.usecases;
 
+import com.service.user.domain.exception.UserNotFoundException;
 import com.service.user.domain.model.User;
 import com.service.user.domain.model.UserStatus;
 import com.service.user.domain.ports.UserRepositoryPort;
@@ -17,7 +18,7 @@ public class DeleteUserUseCase {
     public void execute(UUID userId) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         user.setStatus(UserStatus.DELETED);
 

@@ -1,4 +1,4 @@
-package com.service.user.application.dto;
+package com.service.user.infrastructure.adapters.inbound.dto.response;
 
 import java.util.UUID;
 

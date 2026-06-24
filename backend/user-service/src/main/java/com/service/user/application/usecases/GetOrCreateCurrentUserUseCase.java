@@ -1,4 +1,4 @@
-package com.service.user.application.usecase;
+package com.service.user.application.usecases;
 
 import com.service.user.domain.model.User;
 import com.service.user.domain.model.UserStatus;
@@ -6,21 +6,21 @@ import com.service.user.domain.ports.UserRepositoryPort;
 
 import java.util.UUID;
 
-public class CreateUserUseCase {
+public class GetOrCreateCurrentUserUseCase {
 
     private final UserRepositoryPort userRepository;
 
-    public CreateUserUseCase(UserRepositoryPort userRepository) {
+    public GetOrCreateCurrentUserUseCase(UserRepositoryPort userRepository) {
         this.userRepository = userRepository;
     }
 
-    public User execute(String keycloakId, String email, String name) {
+    public User execute(String iamId, String email, String name) {
 
-        return userRepository.findByKeycloakId(keycloakId)
+        return userRepository.findByIamId(iamId)
                 .orElseGet(() -> {
                     User user = new User();
                     user.setId(UUID.randomUUID());
-                    user.setKeycloakId(keycloakId);
+                    user.setIamId(iamId);
                     user.setEmail(email);
                     user.setName(name);
                     user.setStatus(UserStatus.ACTIVE);

@@ -1,5 +1,6 @@
-package com.service.user.application.usecase;
+package com.service.user.application.usecases;
 
+import com.service.user.domain.exception.UserNotFoundException;
 import com.service.user.domain.model.User;
 import com.service.user.domain.ports.UserRepositoryPort;
 
@@ -16,7 +17,7 @@ public class UpdateUserUseCase {
     public User execute(UUID userId, String name) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         user.setName(name);
 

@@ -1,7 +1,9 @@
-package com.service.user.infrastructure.adapters.outbound.identity.Keycloak.dto;
+package com.service.user.infrastructure.adapters.outbound.identity.model;
 
 import java.util.List;
 import java.util.Map;
+
+import com.service.user.infrastructure.adapters.outbound.identity.model.ExternalUser;
 
 public class ExternalUser {
 
