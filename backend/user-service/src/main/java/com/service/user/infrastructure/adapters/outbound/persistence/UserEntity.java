@@ -1,30 +1,61 @@
-package com.service.user.domain.model;
+package com.service.user.infrastructure.adapters.outbound.persistence;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class User {
+import com.service.user.domain.model.UserStatus;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "users")
+public class UserEntity {
+
+    @Id
+    @Column(name = "id", nullable = false)
     private UUID id;
+
+    @Column(name = "iam_id", nullable = false, unique = true)
     private String iamId;
+
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @Column(name = "name", nullable = false)
     private String name;
-    private UserPreferences preferences;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private UserStatus status;
+
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    public User() {
+    protected UserEntity() {
+        // Required by JPA
     }
 
-    public User(UUID id, String iamId, String email, String name,
-            UserPreferences preferences, UserStatus status,
-            LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public UserEntity(
+            UUID id,
+            String iamId,
+            String email,
+            String name,
+            UserStatus status,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt) {
+
         this.id = id;
         this.iamId = iamId;
         this.email = email;
         this.name = name;
-        this.preferences = preferences;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -44,10 +75,6 @@ public class User {
 
     public String getName() {
         return name;
-    }
-
-    public UserPreferences getPreferences() {
-        return preferences;
     }
 
     public UserStatus getStatus() {
@@ -78,10 +105,6 @@ public class User {
         this.name = name;
     }
 
-    public void setPreferences(UserPreferences preferences) {
-        this.preferences = preferences;
-    }
-
     public void setStatus(UserStatus status) {
         this.status = status;
     }
@@ -93,5 +116,4 @@ public class User {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-
 }

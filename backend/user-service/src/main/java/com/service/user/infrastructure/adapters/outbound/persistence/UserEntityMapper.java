@@ -1,4 +1,4 @@
-package com.service.user.infrastructure.adapters.outbound.persistance;
+package com.service.user.infrastructure.adapters.outbound.persistence;
 
 import com.service.user.domain.model.User;
 
@@ -9,8 +9,7 @@ public class UserEntityMapper {
         entity.setId(user.getId());
         entity.setIamId(user.getIamId());
         entity.setEmail(user.getEmail());
-        entity.setUsername(user.getName());
-        entity.setActive(user.isActive());
+        entity.setName(user.getName());
 
         return entity;
     }
@@ -26,8 +25,7 @@ public class UserEntityMapper {
         user.setId(entity.getId());
         user.setIamId(entity.getIamId());
         user.setEmail(entity.getEmail());
-        user.setName(entity.getUsername());
-        user.setActive(entity.isActive());
+        user.setName(entity.getName());
 
         return user;
     }

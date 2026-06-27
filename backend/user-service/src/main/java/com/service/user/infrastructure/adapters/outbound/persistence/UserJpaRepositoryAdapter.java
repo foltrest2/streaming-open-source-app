@@ -1,4 +1,4 @@
-package com.service.user.infrastructure.adapters.outbound.persistance;
+package com.service.user.infrastructure.adapters.outbound.persistence;
 
 import java.util.Objects;
 import java.util.Optional;

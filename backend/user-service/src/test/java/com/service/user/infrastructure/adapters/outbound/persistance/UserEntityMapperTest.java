@@ -1,7 +1,6 @@
 package com.service.user.infrastructure.adapters.outbound.persistance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import com.service.user.domain.model.User;
 import com.service.user.domain.model.UserPreferences;
 import com.service.user.domain.model.UserStatus;
+import com.service.user.infrastructure.adapters.outbound.persistence.UserEntity;
+import com.service.user.infrastructure.adapters.outbound.persistence.UserEntityMapper;
 
 public class UserEntityMapperTest {
 
@@ -33,8 +34,7 @@ public class UserEntityMapperTest {
                 new UserPreferences(List.of("action"), "es"),
                 UserStatus.ACTIVE,
                 LocalDateTime.now(),
-                LocalDateTime.now(),
-                true);
+                LocalDateTime.now());
     }
 
     @Test
@@ -46,8 +46,7 @@ public class UserEntityMapperTest {
         assertEquals(id, entity.getId());
         assertEquals("iam-123", entity.getIamId());
         assertEquals("julian@test.com", entity.getEmail());
-        assertEquals("julian", entity.getUsername());
-        assertTrue(entity.isActive());
+        assertEquals("julian", entity.getName());
     }
 
     @Test
@@ -58,7 +57,9 @@ public class UserEntityMapperTest {
                 "iam-123",
                 "julian@test.com",
                 "julian",
-                true);
+                UserStatus.ACTIVE,
+                null,
+                null);
 
         User user = mapper.toDomain(entity);
 
@@ -68,7 +69,6 @@ public class UserEntityMapperTest {
         assertEquals("iam-123", user.getIamId());
         assertEquals("julian@test.com", user.getEmail());
         assertEquals("julian", user.getName());
-        assertTrue(user.isActive());
     }
 
     @Test
@@ -87,14 +87,4 @@ public class UserEntityMapperTest {
         assertNull(user);
     }
 
-    @Test
-    void shouldMapInactiveUserCorrectly() {
-
-        user.setActive(false);
-
-        UserEntity entity = mapper.toEntity(user);
-
-        assertNotNull(entity);
-        assertFalse(entity.isActive());
-    }
 }
